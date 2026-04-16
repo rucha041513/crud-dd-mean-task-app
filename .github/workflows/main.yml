@@ -1,53 +1,41 @@
-name: CI-CD Pipeline
+name: MEAN App CI/CD
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # ---------------- BACKEND ----------------
-    - name: Setup Node.js (Backend)
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-    - name: Install Backend Dependencies
-      run: |
-        cd backend
-        npm install
+      - name: Install Backend
+        run: |
+          cd backend
+          npm install
 
-    # ---------------- FRONTEND ----------------
-    - name: Install Frontend Dependencies
-      run: |
-        cd frontend
-        npm install
+      - name: Install Frontend
+        run: |
+          cd frontend
+          npm install
 
-    - name: Build Frontend
-      run: |
-        cd frontend
-        npm run build --prod
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build --prod
 
-    # ---------------- DOCKER BUILD ----------------
-    - name: Build Docker Images
-      run: |
-        docker-compose build
+      # ✅ FIXED HERE
+      - name: Build Docker Images
+        run: docker compose build
 
-    # ---------------- OPTIONAL: RUN CONTAINERS ----------------
-    - name: Run Containers
-      run: |
-        docker-compose up -d
-
-    # ---------------- CLEANUP ----------------
-    - name: Stop Containers
-      run: |
-        docker-compose down
+      - name: Run Containers
+        run: docker compose up -d
